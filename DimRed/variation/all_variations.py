@@ -3,11 +3,11 @@ from DimRed.variation.variation import _Variation
 
 
 class Variations(object):
-    def __init__(self, param_grids: List[Dict], reduction_methods: List, standard_pipeline: Pipeline) -> None:
+    def __init__(self, param_grids: List[Dict], reduction_methods: List, standard_pipeline: Pipeline, analysis_instance: Analysis) -> None:
         self.param_grids = param_grids
         self.dimensionality_reduction_methods = reduction_methods
         self.standard_pipeline = standard_pipeline
-        self.internal_var = _Variation(self.standard_pipeline)
+        self.internal_var = _Variation(self.standard_pipeline, analysis_instance=analysis_instance)
 
     def __iter__(self) -> Tuple[str, str]:
         for param_grid, reduction_method in zip(self.param_grids, self.dimensionality_reduction_methods):
