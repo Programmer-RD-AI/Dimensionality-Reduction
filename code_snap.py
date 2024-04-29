@@ -1,1 +1,7 @@
-inc_pca = make_pipeline(StandardScaler(), IncrementalPCA(n_components=2))
+LocallyLinearEmbedding(
+    n_components=2,
+    n_neighbors=10,
+    method="modified",
+    n_jobs=4,
+    random_state=random_state,
+)
