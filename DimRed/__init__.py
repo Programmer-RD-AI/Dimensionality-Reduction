@@ -8,6 +8,7 @@ from pprint import pprint
 import json
 import wandb
 from sklearn.model_selection import ParameterGrid
+
 # TODO make_pipeline is excessive
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -23,10 +24,11 @@ import cupy as cp
 import warnings
 from dotenv import load_dotenv
 from tqdm import tqdm
+import matplotlib as mpl
 from sklearn.pipeline import Pipeline, make_pipeline
 from typing import *
 import seaborn as sns
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 import math
 import os
 import random
@@ -34,14 +36,24 @@ from sklearn.decomposition import PCA, IncrementalPCA
 from sklearn import datasets
 from wandb.lightgbm import wandb_callback, log_summary
 import logging
+import time
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from joblib import dump
 from wandb.xgboost import WandbCallback
+
 load_dotenv()
+plt.style.use("ggplot")
 PROJECT_NAME = os.getenv("PROJECT_NAME")
-logging.getLogger('lightgbm').setLevel(logging.WARNING)
+logging.getLogger("lightgbm").setLevel(logging.WARNING)
 logging.getLogger("wandb").setLevel(logging.ERROR)
 os.environ["WANDB_SILENT"] = "true"
 warnings.filterwarnings("ignore")
-RANDOM_STATE = 42
+run = str(time.time())
+RANDOM_STATE = 0
 random.seed(RANDOM_STATE)
 np.random.seed(RANDOM_STATE)
 from DimRed.config import *
