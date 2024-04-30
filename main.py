@@ -16,46 +16,58 @@ from sklearn.neighbors import KNeighborsClassifier, NeighborhoodComponentsAnalys
 
 def config():
     param_grids = [
-        {"n_components": [1, 2, 3]},
-        {"n_components": [1, 2, 3]},
+        # {"n_components": [1, 2, 3]},
+        # {"n_components": [1, 2, 3]},
         {
-            "kernel": ["linear", "poly", "rbf", "cosine"],
+            "kernel": ["rbf"],
             "n_components": [1, 2, 3],
             "gamma": [None],
-            "fit_inverse_transform": [True, False],
+            "fit_inverse_transform": [True],
             "n_jobs": [-1],
         },
         {
             "n_components": [1, 2, 3],
-            "alpha": [0.0001, 0.001, 0.01, 0.1],
+            "alpha": [0.001, 0.01],
             "n_jobs": [-1],
         },
         {
             "n_components": [1, 2, 3],
             "algorithm": ["randomized"],
-            "n_iter": [1, 2, 3, 4, 5],
+            "n_iter": [1, 2, 4, 5],
         },
-        {"n_components": [1, 2, 3], "eps": [0.125, 0.25, 0.5, 0.625, 0.75, 1]},
+        {"n_components": [1, 2, 3], "eps": [0.125, 0.75, 1]},
         {"n_components": [1, 2, 3]},
         {"n_components": [1, 2, 3]},
         {
             "n_components": [1, 2, 3],
             "density": ["auto"],
-            "eps": [0.125, 0.25, 0.5, 0.625, 0.75, 1],
+            "eps": [
+                0.25,
+                0.5,
+                0.625,
+            ],
             "dense_output": [True, False],
         },
-        {"n_components": [1, 2, 3], "n_jobs": [-1], "n_neighbors": [1, 3, 5, 7, 9]},
+        {"n_components": [1, 2, 3], "n_jobs": [-1], "n_neighbors": [1, 5, 9]},
         {
             "n_components": [1, 2, 3],
-            "batch_size": [50, 100, 200, 400],
-            "alpha": [1, 0.0001, 0.001, 0.01, 0.1],
-            "n_iter": [1, 2, 3, 4, 5],
+            "batch_size": [100, 200],
+            "alpha": [
+                0.0001,
+                0.001,
+                0.01,
+            ],
+            "n_iter": [
+                2,
+                3,
+                4,
+            ],
         },
         {
             "n_components": [1, 2, 3],
             "algorithm": ["parallel", "deflation"],
             "whiten": [True, False],
-            "max_iter": [25, 50, 75, 100],
+            "max_iter": [50, 100],
         },
         {
             "n_components": [1, 2, 3],
@@ -65,8 +77,8 @@ def config():
         },
     ]
     reduction_methods = [
-        PCA,
-        IncrementalPCA,
+        # PCA,
+        # IncrementalPCA,
         KernelPCA,
         SparsePCA,
         TruncatedSVD,

@@ -1,8 +1,17 @@
 from DimRed import *
+from DimRed import *
+import math
 
 
 class Analysis:
     def __init__(self, X: np.array, y: np.array):
+        """Initialize Analysis class.
+
+        Args:
+            X (np.array): Input data.
+            y (np.array): Target labels.
+        """
+
         self.X = X
         self.size_per_side = int(math.sqrt(len(self.X)))
         self.y = y
@@ -10,17 +19,26 @@ class Analysis:
     def produce_combinations(
         self, name: str, standard_pipeline: Pipeline, pipeline: Pipeline
     ) -> None:
+        """Produce combinations of scatter plots.
+
+        Args:
+            name (str): Name of the scatter plot.
+            standard_pipeline (Pipeline): Standard pipeline object.
+            pipeline (Pipeline): Custom pipeline object.
+        """
         standard_pipeline.fit(self.X, self.y)
         pipeline.fit(self.X, self.y)
         X_standard_embedded = standard_pipeline.transform(self.X)
         X_custom_pipeline_embedded = pipeline.transform(self.X)
         fig = plt.figure(figsize=(12, 10))
         fig.suptitle(f"{name}-{standard_pipeline}")
+
         ax_custom = (
             fig.add_subplot(111, projection="3d")
             if X_custom_pipeline_embedded.shape[-1] > 2
             else fig.add_subplot(111)
         )
+
         if X_custom_pipeline_embedded.shape[-1] == 1:
             x, y = (
                 X_custom_pipeline_embedded[:, 0],

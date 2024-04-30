@@ -12,6 +12,17 @@ class Evaluation:
         lgb_config: Dict[str, Union[str, int]] = lgb_config,
         xgb_config: Dict[str, Union[str, int]] = xgb_config,
     ) -> None:
+        """Initialize the Evaluation class.
+
+        Args:
+            _data: A dictionary containing the data.
+            all_possible_variations: A dictionary containing all possible variations.
+            labels: An array containing the labels.
+            metric: The evaluation metric to use (default: "accuracy").
+            sklearn_config: A dictionary containing the sklearn configuration.
+            lgb_config: A dictionary containing the lightgbm configuration.
+            xgb_config: A dictionary containing the xgboost configuration.
+        """
         self.sklearn_config = sklearn_config
         self.lgb_config = lgb_config
         self.xgb_config = xgb_config
@@ -30,9 +41,22 @@ class Evaluation:
         results: Dict = {},
         dimred_technique: str = None,
     ) -> Tuple[Dict[str, Union[str, int]], Dict[str, int]]:
+        """Perform evaluation using sklearn models.
+
+        Args:
+            X_train: The training data.
+            X_test: The testing data.
+            y_train: The training labels.
+            y_test: The testing labels.
+            inner_iterator: The inner iterator.
+            results: A dictionary to store the results.
+            dimred_technique: The dimensionality reduction technique.
+
+        Returns:
+            A tuple containing the results and the best model.
+        """
         best_model = [0, {}]
         for model in tqdm(self.sklearn_config):
-            print(model)
             name = dimred_technique + model().__class__.__name__
             inner_iterator.set_description(name)
             model_config = self.sklearn_config[model]
@@ -56,18 +80,18 @@ class Evaluation:
             metrics = classification_report(y_test, y_preds, output_dict=True)
             results[model.__class__.__name__] = metrics
             wandb.log(metrics)
-            wandb.sklearn.plot_classifier(
-                model,
-                X_train,
-                X_test,
-                y_train,
-                y_test,
-                y_preds,
-                y_probas,
-                range(min(y_probas.shape)),
-                model_name=name,
-                feature_names=None,
-            )
+            # wandb.sklearn.plot_classifier(
+            #     model,
+            #     X_train,
+            #     X_test,
+            #     y_train,
+            #     y_test,
+            #     y_preds,
+            #     y_probas,
+            #     range(min(y_probas.shape)),
+            #     model_name=name,
+            #     feature_names=None,
+            # )
             if metrics[self.metric] > best_model[0]:
                 best_model[0] = metrics[self.metric]
                 best_model[1] = metrics
@@ -85,6 +109,19 @@ class Evaluation:
         results: Dict = {},
         dimred_technique: str = None,
     ) -> Tuple[Dict[str, Union[str, int]], Dict[str, int]]:
+        """Perform evaluation using xgboost model.
+
+        Args:
+            X_train: The training data.
+            X_test: The testing data.
+            y_train: The training labels.
+            y_test: The testing labels.
+            results: A dictionary to store the results.
+            dimred_technique: The dimensionality reduction technique.
+
+        Returns:
+            A tuple containing the results and the metrics.
+        """
         model = xgb.XGBClassifier(**self.xgb_config)
         name = dimred_technique + model.__class__.__name__
         wandb.init(
@@ -102,7 +139,7 @@ class Evaluation:
             cp.asarray(X_train),
             cp.asarray(y_train),
             eval_set=[(cp.asarray(X_test), cp.asarray(y_test))],
-            callbacks=[WandbCallback(log_model=True)],
+            # callbacks=[WandbCallback(log_model=True)],
         )
         y_preds = model.predict(X_test)
         metrics = classification_report(y_test, y_preds, output_dict=True)
@@ -122,6 +159,19 @@ class Evaluation:
         results: Dict = {},
         dimred_technique: str = None,
     ) -> Tuple[Dict[str, Union[str, int]], Dict[str, int]]:
+        """Perform evaluation using lightgbm model.
+
+        Args:
+            X_train: The training data.
+            X_test: The testing data.
+            y_train: The training labels.
+            y_test: The testing labels.
+            results: A dictionary to store the results.
+            dimred_technique: The dimensionality reduction technique.
+
+        Returns:
+            A tuple containing the results and the metrics.
+        """
         name = dimred_technique + "LGBClf"
         wandb.init(
             project=PROJECT_NAME,
@@ -139,14 +189,14 @@ class Evaluation:
             self.lgb_config,
             train_data,
             valid_sets=[test_data],
-            callbacks=[wandb_callback()],
+            # callbacks=[wandb_callback()],
         )
         y_preds = model.predict(X_test)
         metrics = classification_report(
             y_test, np.argmax(y_preds, axis=1), output_dict=True
         )
         results[name] = metrics
-        log_summary(model, save_model_checkpoint=True)
+        # log_summary(model, save_model_checkpoint=True)
         wandb.log(metrics)
         wandb.finish()
         dirs = director_exist(os.path.join(os.getenv("MODEL_PATH"), run))
@@ -155,6 +205,11 @@ class Evaluation:
         return results, metrics
 
     def evaluate(self) -> Dict[str, Dict[str, Dict[str, Union[str, int]]]]:
+        """Perform evaluation of all pipeline variations.
+
+        Returns:
+            A dictionary containing all pipeline performances and the best performances.
+        """
         all_pipeline_performance = {}
         outer_iterator = tqdm(self.all_variations)
         best_performances = {
@@ -168,7 +223,7 @@ class Evaluation:
             specific_pipeline_variations = self.all_variations[pipeline_variation_name]
             inner_iterator = tqdm(specific_pipeline_variations, leave=False)
             for pipeline_variation in inner_iterator:
-                name_of_pipeline = pipeline_variation.__class__.__name__
+                name_of_pipeline = pipeline_variation.steps[-1][-1].__class__.__name__
                 pipeline_performance = {}
                 X_train = pipeline_variation.fit_transform(self._data["X_train"])
                 X_test = pipeline_variation.transform(self._data["X_test"])
@@ -207,19 +262,17 @@ class Evaluation:
                 avg_var = average_metric(
                     self.metric, [sklearn_metrics, xgb_metrics, lgb_metrics]
                 )
-                if avg_var > best_performing_pipeline[0]:
-                    best_performing_pipeline[0] = avg_var
-                    best_performing_pipeline[1] = str(pipeline_variation).strip
-                    # best_performing_pipeline[2] = pipeline_performance
+                if float(avg_var) > float(best_performing_pipeline[0]):
+                    best_performing_pipeline[0] = str(avg_var)
+                    best_performing_pipeline[1] = name_of_pipeline
                 inner_iterator.set_description(f"{name_of_pipeline} Done :)")
-            # best_performances[pipeline_variation_name] = best_performing_pipeline
             best_performances = add_to_dictionary(
                 best_performances, best_performing_pipeline
             )
-        with open(f'{os.getenv("DATA_PATH")}/all_performance_data.json', "w") as f:
-            json.dump(all_pipeline_performance, f)
-        with open(
-            f'{os.getenv("DATA_PATH")}/best_performance_dimred.json', "w"
-        ) as json_f:
-            json.dump(best_performances, json_f)
+            with open(f'{os.getenv("DATA_PATH")}/all_performance_data.json', "w") as f:
+                json.dump(all_pipeline_performance, f)
+            with open(
+                f'{os.getenv("DATA_PATH")}/best_performance_dimred.json', "w"
+            ) as json_f:
+                json.dump(best_performances, json_f)
         return all_pipeline_performance, best_performances
