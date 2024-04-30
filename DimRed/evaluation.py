@@ -80,18 +80,18 @@ class Evaluation:
             metrics = classification_report(y_test, y_preds, output_dict=True)
             results[model.__class__.__name__] = metrics
             wandb.log(metrics)
-            # wandb.sklearn.plot_classifier(
-            #     model,
-            #     X_train,
-            #     X_test,
-            #     y_train,
-            #     y_test,
-            #     y_preds,
-            #     y_probas,
-            #     range(min(y_probas.shape)),
-            #     model_name=name,
-            #     feature_names=None,
-            # )
+            wandb.sklearn.plot_classifier(
+                model,
+                X_train,
+                X_test,
+                y_train,
+                y_test,
+                y_preds,
+                y_probas,
+                range(min(y_probas.shape)),
+                model_name=name,
+                feature_names=None,
+            )
             if metrics[self.metric] > best_model[0]:
                 best_model[0] = metrics[self.metric]
                 best_model[1] = metrics
@@ -139,7 +139,7 @@ class Evaluation:
             cp.asarray(X_train),
             cp.asarray(y_train),
             eval_set=[(cp.asarray(X_test), cp.asarray(y_test))],
-            # callbacks=[WandbCallback(log_model=True)],
+            callbacks=[WandbCallback(log_model=True)],
         )
         y_preds = model.predict(X_test)
         metrics = classification_report(y_test, y_preds, output_dict=True)
@@ -189,14 +189,14 @@ class Evaluation:
             self.lgb_config,
             train_data,
             valid_sets=[test_data],
-            # callbacks=[wandb_callback()],
+            callbacks=[wandb_callback()],
         )
         y_preds = model.predict(X_test)
         metrics = classification_report(
             y_test, np.argmax(y_preds, axis=1), output_dict=True
         )
         results[name] = metrics
-        # log_summary(model, save_model_checkpoint=True)
+        log_summary(model, save_model_checkpoint=True)
         wandb.log(metrics)
         wandb.finish()
         dirs = director_exist(os.path.join(os.getenv("MODEL_PATH"), run))
@@ -225,7 +225,12 @@ class Evaluation:
             for pipeline_variation in inner_iterator:
                 name_of_pipeline = pipeline_variation.steps[-1][-1].__class__.__name__
                 pipeline_performance = {}
-                X_train = pipeline_variation.fit_transform(self._data["X_train"])
+                try:
+                    X_train = pipeline_variation.fit_transform(self._data["X_train"])
+                except:
+                    X_train = pipeline_variation.fit_transform(
+                        self._data["X_train"], self._data["y_train"]
+                    )
                 X_test = pipeline_variation.transform(self._data["X_test"])
                 inner_iterator.set_description("Sklearn Model...")
                 pipeline_performance, sklearn_metrics = self.sklearn(
@@ -264,7 +269,7 @@ class Evaluation:
                 )
                 if float(avg_var) > float(best_performing_pipeline[0]):
                     best_performing_pipeline[0] = str(avg_var)
-                    best_performing_pipeline[1] = name_of_pipeline
+                    best_performing_pipeline[1] = str(pipeline_variation)
                 inner_iterator.set_description(f"{name_of_pipeline} Done :)")
             best_performances = add_to_dictionary(
                 best_performances, best_performing_pipeline

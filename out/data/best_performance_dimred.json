@@ -1,1 +1,7 @@
-{"accuracy": ["0.7274074074074074"], "pipeline_variation": ["KernelPCA"], "pipeline_name": ["KernelPCA"]}
+{
+  "accuracy": ["0.5007407407407408"],
+  "pipeline_variation": [
+    "Pipeline(steps=[('StandardScalar', StandardScaler()),\n                ('SparseRandomProjection',\n                 SparseRandomProjection(eps=0.5, n_components=3))])"
+  ],
+  "pipeline_name": ["SparseRandomProjection"]
+}
