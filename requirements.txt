@@ -401,7 +401,7 @@ watchdog==4.0.0
 wcwidth==0.2.13
 webencodings==0.5.1
 websocket-client @ file:///work/ci_py311/websocket-client_1676824890004/work
-Werkzeug==3.0.1
+Werkzeug==3.0.6
 whatthepatch @ file:///work/ci_py311/whatthepatch_1677708379946/work
 widgetsnbextension @ file:///croot/widgetsnbextension_1701273613663/work
 wordcloud==1.9.3
