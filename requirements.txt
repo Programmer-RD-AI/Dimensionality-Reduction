@@ -269,7 +269,7 @@ pyct @ file:///work/ci_py311/pyct_1676838544646/work
 pycurl @ file:///croot/pycurl_1686662440405/work
 pydantic @ file:///croot/pydantic_1695798841041/work
 pydeck @ file:///croot/pydeck_1706194064552/work
-PyDispatcher==2.0.5
+PyDispatcher==2.0.7
 pydocstyle @ file:///work/ci_py311/pydocstyle_1677708708066/work
 pyerfa @ file:///work/ci_py311/pyerfa_1676838574038/work
 pyflakes @ file:///work/ci_py311/pyflakes_1677708650266/work
