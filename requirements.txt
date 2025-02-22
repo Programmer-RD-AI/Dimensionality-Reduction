@@ -284,7 +284,7 @@ pyOpenSSL @ file:///croot/pyopenssl_1708380408460/work
 pyparsing @ file:///work/ci_py311/pyparsing_1677811559502/work
 PyQt5==5.15.10
 PyQt5-sip @ file:///croot/pyqt-split_1698769088074/work/pyqt_sip
-PyQtWebEngine==5.15.6
+PyQtWebEngine==5.15.7
 PySocks @ file:///work/ci_py311/pysocks_1676822712504/work
 pytest @ file:///croot/pytest_1690474690005/work
 python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
