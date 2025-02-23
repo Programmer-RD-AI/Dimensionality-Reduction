@@ -22,7 +22,7 @@ astropy @ file:///croot/astropy_1697468907928/work
 asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
 astunparse==1.6.3
 async-lru @ file:///croot/async-lru_1699554519285/work
-atomicwrites==1.4.0
+atomicwrites==1.4.1
 attrs @ file:///croot/attrs_1695717823297/work
 Automat @ file:///tmp/build/80754af9/automat_1600298431173/work
 autopep8 @ file:///opt/conda/conda-bld/autopep8_1650463822033/work
