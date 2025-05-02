@@ -41,7 +41,7 @@ boltons @ file:///work/ci_py311/boltons_1677685195580/work
 botocore @ file:///croot/botocore_1701286451219/work
 Bottleneck @ file:///croot/bottleneck_1707864210935/work
 Brotli @ file:///work/ci_py311/brotli-split_1676830125088/work
-CacheControl==0.14.0
+CacheControl==0.14.3
 cachetools==5.3.3
 certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1707022139797/work/certifi
 cffi @ file:///croot/cffi_1700254295673/work
