@@ -96,7 +96,7 @@ firebase-admin==6.5.0
 firebase-functions==0.1.2
 flake8 @ file:///work/ci_py311/flake8_1677709235205/work
 Flask==3.0.2
-Flask-Cors==4.0.0
+Flask-Cors==6.0.0
 flatbuffers==24.3.25
 fonttools==4.25.0
 frozenlist @ file:///croot/frozenlist_1698702560391/work
