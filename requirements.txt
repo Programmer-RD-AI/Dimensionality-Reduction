@@ -376,7 +376,7 @@ tldextract @ file:///opt/conda/conda-bld/tldextract_1646638314385/work
 toml @ file:///tmp/build/80754af9/toml_1616166611790/work
 tomlkit @ file:///work/ci_py311/tomlkit_1676823218885/work
 toolz @ file:///work/ci_py311/toolz_1676827522705/work
-torch==2.3.0
+torch==2.8.0
 torchaudio==2.3.0
 torchvision==0.18.0
 tornado @ file:///croot/tornado_1696936946304/work
